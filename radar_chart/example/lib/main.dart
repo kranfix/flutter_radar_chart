@@ -12,21 +12,21 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: RadarChartExample(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class RadarChartExample extends StatefulWidget {
+  RadarChartExample({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _RadarChartExampleState createState() => _RadarChartExampleState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _RadarChartExampleState extends State<RadarChartExample> {
   int _counter = 3;
   List<double> values1 = [0.4, 0.8, 0.65];
   List<double> values2 = [0.5, 0.3, 0.85];
