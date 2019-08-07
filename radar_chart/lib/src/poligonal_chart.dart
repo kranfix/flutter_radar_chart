@@ -31,6 +31,7 @@ class PoligonalChart extends StatelessWidget {
       child: Container(
         width: 2 * radius,
         height: 2 * radius,
+        color: backgroundColor,
       ),
     );
   }
@@ -58,8 +59,9 @@ class _PoligonalClipper extends CustomClipper<Path> {
           values.length,
           (i) {
             final angle = initialAngle + i * deltaAngle;
-            final dx = radius * (1 + sin(angle));
-            final dy = radius * (1 + cos(angle));
+            final val = values[i] > 1 ? 1 : values[i] < 0 ? 0 : values[i];
+            final dx = radius * (1 + val * sin(angle));
+            final dy = radius * (1 + val * cos(angle));
             return Offset(dx, dy);
           },
           growable: false,
