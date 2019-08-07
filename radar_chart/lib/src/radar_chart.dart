@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:radar_chart/src/poligonal_chart.dart';
+import 'package:radar_chart/src/radar_tile.dart';
 
 enum RadarChatType { cirular, poligonal }
 
@@ -17,7 +17,7 @@ class RadarChart extends InheritedWidget {
   }) : super(
           child: Stack(
             children: [
-              PoligonalChart(
+              RadarTile(
                 backgroundColor: backgroundColor,
                 borderStroke: borderStroke,
                 borderColor: borderColor,
@@ -35,7 +35,7 @@ class RadarChart extends InheritedWidget {
   final Color backgroundColor;
   final double radialStroke;
   final Color radialColor;
-  final List<PoligonalChart> radars;
+  final List<RadarTile> radars;
   final double initialAngle;
 
   @override

@@ -2,8 +2,8 @@ import 'dart:math' show sin, cos, pi;
 import 'package:flutter/material.dart';
 import 'package:radar_chart/src/radar_chart.dart';
 
-class PoligonalChart extends StatelessWidget {
-  PoligonalChart({
+class RadarTile extends StatelessWidget {
+  RadarTile({
     this.borderStroke,
     this.borderColor,
     this.backgroundColor,

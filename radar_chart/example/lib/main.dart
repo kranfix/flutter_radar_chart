@@ -59,13 +59,13 @@ class _MyHomePageState extends State<MyHomePage> {
             radialStroke: 2,
             radialColor: Colors.grey,
             radars: [
-              PoligonalChart(
+              RadarTile(
                 values: values1,
                 borderStroke: 2,
                 borderColor: Colors.yellow,
                 backgroundColor: Colors.yellow.withOpacity(0.4),
               ),
-              PoligonalChart(
+              RadarTile(
                 values: values2,
                 borderStroke: 2,
                 borderColor: Colors.blue,
