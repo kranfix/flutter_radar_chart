@@ -3,7 +3,7 @@ import 'package:radar_chart/src/poligonal_chart.dart';
 
 enum RadarChatType { cirular, poligonal }
 
-class RadarChart extends StatelessWidget {
+class RadarChart extends InheritedWidget {
   RadarChart({
     @required this.radius,
     @required this.length,
@@ -14,7 +14,19 @@ class RadarChart extends StatelessWidget {
     this.radialColor,
     this.radars: const [],
     this.initialAngle: 0,
-  });
+  }) : super(
+          child: Stack(
+            children: [
+              PoligonalChart(
+                backgroundColor: backgroundColor,
+                borderStroke: borderStroke,
+                borderColor: borderColor,
+                radialStroke: radialStroke,
+                radialColor: radialColor,
+              ),
+            ]..addAll(radars),
+          ),
+        );
 
   final double radius;
   final int length;
@@ -27,20 +39,10 @@ class RadarChart extends StatelessWidget {
   final double initialAngle;
 
   @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        PoligonalChart(
-          length: length,
-          radius: radius,
-          backgroundColor: backgroundColor,
-          borderStroke: borderStroke,
-          borderColor: borderColor,
-          initialAngle: initialAngle,
-          radialStroke: radialStroke,
-          radialColor: radialColor,
-        ),
-      ]..addAll(radars),
-    );
+  bool updateShouldNotify(InheritedWidget oldWidget) {
+    return true;
   }
+
+  static RadarChart of(BuildContext context) =>
+      context.ancestorInheritedElementForWidgetOfExactType(RadarChart).widget;
 }

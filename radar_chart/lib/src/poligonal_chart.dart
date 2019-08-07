@@ -1,31 +1,30 @@
-import 'package:flutter/material.dart';
 import 'dart:math' show sin, cos, pi;
+import 'package:flutter/material.dart';
+import 'package:radar_chart/src/radar_chart.dart';
 
 class PoligonalChart extends StatelessWidget {
   PoligonalChart({
-    @required this.radius,
-    @required this.length,
     this.borderStroke,
     this.borderColor,
     this.backgroundColor,
-    this.initialAngle: 0,
     this.values,
     this.radialStroke,
     this.radialColor,
   });
 
-  final double radius;
-  final int length;
   final double borderStroke;
   final Color borderColor;
   final Color backgroundColor;
-  final double initialAngle;
   final List<double> values;
   final double radialStroke;
   final Color radialColor;
 
-  List<Offset> get points {
+  List<Offset> calculatePoints(BuildContext context) {
+    final radar = RadarChart.of(context);
+    final radius = radar.radius;
+    final length = radar.length;
     final deltaAngle = 2 * pi / length;
+    final initialAngle = radar.initialAngle;
     return List.generate(
       length,
       (i) {
@@ -44,15 +43,16 @@ class PoligonalChart extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget tree;
 
-    final _points = points;
+    final points = calculatePoints(context);
+    final radius = RadarChart.of(context).radius;
 
     if (radialColor != null && radialStroke != null && radialStroke > 0) {
       tree = CustomPaint(
         painter: _PoligonalRadialPainter(
-          points: _points,
+          points: points,
           stroke: radialStroke,
           color: radialColor,
-          //center: Offset(radius, radius),
+          center: Offset(radius, radius),
         ),
         child: tree,
       );
@@ -61,7 +61,7 @@ class PoligonalChart extends StatelessWidget {
     if (borderColor != null && borderStroke != null && borderStroke > 0) {
       tree = CustomPaint(
         painter: _PoligonalEdgesPainter(
-          points: _points,
+          points: points,
           stroke: borderStroke,
           color: borderColor,
         ),
@@ -73,7 +73,7 @@ class PoligonalChart extends StatelessWidget {
       tree = CustomPaint(
         painter: _PoligonalBackgroundPainter(
           color: backgroundColor,
-          points: _points,
+          points: points,
         ),
         child: tree,
       );
@@ -144,10 +144,9 @@ class _PoligonalRadialPainter extends CustomPainter {
       ..strokeWidth = stroke
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
-    final radius = size.width / 2;
-    final _center = center ?? Offset(radius, radius);
+
     for (var point in points) {
-      canvas.drawLine(_center, point, paint);
+      canvas.drawLine(center, point, paint);
     }
   }
 

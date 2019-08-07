@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Center(
           child: RadarChart(
             length: _counter,
-            radius: 200,
+            radius: 150,
             initialAngle: pi / 3,
             //backgroundColor: Colors.white,
             //borderStroke: 2,
@@ -60,18 +60,12 @@ class _MyHomePageState extends State<MyHomePage> {
             radialColor: Colors.grey,
             radars: [
               PoligonalChart(
-                length: _counter,
-                radius: 200,
-                initialAngle: pi / 3,
                 values: values1,
                 borderStroke: 2,
                 borderColor: Colors.yellow,
                 backgroundColor: Colors.yellow.withOpacity(0.4),
               ),
               PoligonalChart(
-                length: _counter,
-                radius: 200,
-                initialAngle: pi / 3,
                 values: values2,
                 borderStroke: 2,
                 borderColor: Colors.blue,
