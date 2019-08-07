@@ -42,18 +42,30 @@ class PoligonalChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget tree = SizedBox(width: 2 * radius, height: 2 * radius);
+    Widget tree;
 
     final _points = points;
 
     if (radialColor != null && radialStroke != null && radialStroke > 0) {
       tree = CustomPaint(
-        painter: _RadialPainter(
+        painter: _PoligonalRadialPainter(
           points: _points,
-          radialStroke: radialStroke,
-          radialColor: radialColor,
+          stroke: radialStroke,
+          color: radialColor,
+          //center: Offset(radius, radius),
         ),
         child: tree,
+      );
+    }
+
+    if (borderColor != null && borderStroke != null && borderStroke > 0) {
+      tree = CustomPaint(
+        painter: _PoligonalEdgesPainter(
+          points: _points,
+          stroke: borderStroke,
+          color: borderColor,
+        ),
+        //child: tree,
       );
     }
 
@@ -66,20 +78,7 @@ class PoligonalChart extends StatelessWidget {
         child: tree,
       );
     }
-
-    if (borderColor != null && borderStroke != null && borderStroke > 0) {
-      tree = CustomPaint(
-        painter: _PoligonalPainter(
-          points: _points,
-          borderStroke: borderStroke,
-          borderColor: borderColor,
-          radialStroke: radialStroke,
-          radialColor: radialColor,
-        ),
-        child: tree,
-      );
-    }
-    return tree;
+    return SizedBox(width: 2 * radius, height: 2 * radius, child: tree);
   }
 }
 
@@ -102,28 +101,20 @@ class _PoligonalBackgroundPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
 
-class _PoligonalPainter extends CustomPainter {
-  _PoligonalPainter({
-    this.points,
-    this.borderStroke,
-    this.borderColor,
-    this.radialStroke,
-    this.radialColor,
-  });
+class _PoligonalEdgesPainter extends CustomPainter {
+  _PoligonalEdgesPainter({this.points, this.stroke, this.color});
   final List<Offset> points;
-  final double borderStroke;
-  final Color borderColor;
-  final double radialStroke;
-  final Color radialColor;
+  final double stroke;
+  final Color color;
 
   @override
   void paint(Canvas canvas, Size size) {
     final path = Path()..addPolygon(points, true);
 
-    if (borderColor != null && borderStroke != null && borderStroke > 0) {
+    if (color != null && stroke != null && stroke > 0) {
       final paint = Paint()
-        ..color = borderColor
-        ..strokeWidth = borderStroke
+        ..color = color
+        ..strokeWidth = stroke
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round;
       canvas.drawPath(path, paint);
@@ -134,23 +125,23 @@ class _PoligonalPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
 
-class _RadialPainter extends CustomPainter {
-  _RadialPainter({
+class _PoligonalRadialPainter extends CustomPainter {
+  _PoligonalRadialPainter({
     this.points,
-    this.radialStroke,
-    this.radialColor,
+    this.stroke,
+    this.color,
     this.center,
   });
   final List<Offset> points;
-  final double radialStroke;
-  final Color radialColor;
+  final double stroke;
+  final Color color;
   final Offset center;
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = radialColor
-      ..strokeWidth = radialStroke
+      ..color = color
+      ..strokeWidth = stroke
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
     final radius = size.width / 2;
