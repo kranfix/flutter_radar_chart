@@ -11,7 +11,7 @@ class PoligonalChart extends StatelessWidget {
     this.initialAngle: 0,
     this.values,
     this.radialStroke,
-    this.radialLineColor,
+    this.radialColor,
   });
 
   final double radius;
@@ -22,7 +22,7 @@ class PoligonalChart extends StatelessWidget {
   final double initialAngle;
   final List<double> values;
   final double radialStroke;
-  final Color radialLineColor;
+  final Color radialColor;
 
   List<Offset> get points {
     final deltaAngle = 2 * pi / length;
@@ -58,14 +58,15 @@ class PoligonalChart extends StatelessWidget {
     }
 
     if (borderColor != null && borderStroke != null && borderStroke > 0 ||
-        radialLineColor != null && radialStroke != null && radialStroke > 0) {
+        radialColor != null && radialStroke != null && radialStroke > 0) {
       tree = CustomPaint(
         painter: _PoligonalPainter(
-            points: _points,
-            borderStroke: borderStroke,
-            borderColor: borderColor,
-            radialStroke: radialStroke,
-            radialColor: radialLineColor),
+          points: _points,
+          borderStroke: borderStroke,
+          borderColor: borderColor,
+          radialStroke: radialStroke,
+          radialColor: radialColor,
+        ),
         child: tree,
       );
     }
