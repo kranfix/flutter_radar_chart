@@ -10,7 +10,7 @@ A new Flutter package project.
 
 # Example
 
-![Example](pictures/example1.png)
+![Example](pictures/example.png)
 
 ```dart
 class _RadarChartExampleState extends State<RadarChartExample> {
