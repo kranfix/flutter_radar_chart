@@ -1,12 +1,11 @@
 # radar_chart
 
-A new Flutter package project.
+A flexible Flutter radar/spider chart with super powers.
+Colors and Sizes are customizable.
 
 ## Future work
 
-- Add documentation.
 - Handle errors if a RadarTile is out of RadarChart.
--
 
 # Example
 
