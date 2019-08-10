@@ -3,6 +3,7 @@ import 'package:radar_chart/src/radar_tile.dart';
 
 enum RadarChatType { cirular, poligonal }
 
+/// Radar chart, also known as Spider chart
 class RadarChart extends InheritedWidget {
   RadarChart({
     @required this.radius,
@@ -28,14 +29,40 @@ class RadarChart extends InheritedWidget {
           ),
         );
 
+  /// Radius of the circumscribed circumference of the radar chart.
+  /// This defines the sizes:
+  /// width = 2 * radius
+  /// height = 2 * radius
   final double radius;
+
+  /// Number of edges or nodes
   final int length;
+
+  /// Borderline strokewidth
+  /// if null, the borderlines does not appear
+  /// To work, it is necessary to set [borderColor]
   final double borderStroke;
+
+  /// Borderline color
+  /// To work, it is necessary to set [borderStroke]
   final Color borderColor;
+
+  /// Radar chart Background color
+  /// White by default
   final Color backgroundColor;
+
+  /// Strokewidth of lines from the center of the circumscribed circumference
+  /// To work, it is necessary to set [radialColor]
   final double radialStroke;
+
+  /// Color of lines from the center of the circumscribed circumference
+  /// To work, it is necessary to set [radialStroke]
   final Color radialColor;
+
+  /// Each [RadarTile] specifies a radarchart
   final List<RadarTile> radars;
+
+  /// Rotates the radar chart at an initial angle in radians in clockwise
   final double initialAngle;
 
   @override
