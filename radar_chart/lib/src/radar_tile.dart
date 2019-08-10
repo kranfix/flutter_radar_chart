@@ -2,6 +2,8 @@ import 'dart:math' show sin, cos, pi;
 import 'package:flutter/material.dart';
 import 'package:radar_chart/src/radar_chart.dart';
 
+/// [RadarTile] paints a polygon with optional edges, background or
+/// radial lines (lines from each node to the center)
 class RadarTile extends StatelessWidget {
   RadarTile({
     this.borderStroke,
@@ -12,11 +14,28 @@ class RadarTile extends StatelessWidget {
     this.radialColor,
   });
 
+  /// Borderline strokewidth
+  /// if null, the borderlines does not appear
+  /// To work, it is necessary to set [borderColor]
   final double borderStroke;
+
+  /// Borderline color
+  /// To work, it is necessary to set [borderStroke]
   final Color borderColor;
+
+  /// Radar chart Background color
+  /// White by default
   final Color backgroundColor;
+
+  /// A list of values between 0.0 (zero) and 1.0 (one)
   final List<double> values;
+
+  /// Strokewidth of lines from the center of the circumscribed circumference
+  /// To work, it is necessary to set [radialColor]
   final double radialStroke;
+
+  /// Color of lines from the center of the circumscribed circumference
+  /// To work, it is necessary to set [radialStroke]
   final Color radialColor;
 
   List<Offset> calculatePoints(BuildContext context) {
@@ -46,9 +65,10 @@ class RadarTile extends StatelessWidget {
     final points = calculatePoints(context);
     final radius = RadarChart.of(context).radius;
 
+    // Paints lines from the center of the widget to each node of the polygon
     if (radialColor != null && radialStroke != null && radialStroke > 0) {
       tree = CustomPaint(
-        painter: _PoligonalRadialPainter(
+        painter: RadialPainter(
           points: points,
           stroke: radialStroke,
           color: radialColor,
@@ -58,9 +78,10 @@ class RadarTile extends StatelessWidget {
       );
     }
 
+    // Paints polygonal edges if required
     if (borderColor != null && borderStroke != null && borderStroke > 0) {
       tree = CustomPaint(
-        painter: _PoligonalEdgesPainter(
+        painter: _EdgesPainter(
           points: points,
           stroke: borderStroke,
           color: borderColor,
@@ -69,9 +90,10 @@ class RadarTile extends StatelessWidget {
       );
     }
 
+    // Paints the polygon backgorund edges if required
     if (backgroundColor != null) {
       tree = CustomPaint(
-        painter: _PoligonalBackgroundPainter(
+        painter: _BackgroundPainter(
           color: backgroundColor,
           points: points,
         ),
@@ -82,8 +104,9 @@ class RadarTile extends StatelessWidget {
   }
 }
 
-class _PoligonalBackgroundPainter extends CustomPainter {
-  _PoligonalBackgroundPainter({this.points, this.color});
+/// Polygonal backgound painter
+class _BackgroundPainter extends CustomPainter {
+  _BackgroundPainter({this.points, this.color});
   final List<Offset> points;
   final Color color;
 
@@ -101,8 +124,9 @@ class _PoligonalBackgroundPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
 
-class _PoligonalEdgesPainter extends CustomPainter {
-  _PoligonalEdgesPainter({this.points, this.stroke, this.color});
+/// Paints all the Edges of a polygona
+class _EdgesPainter extends CustomPainter {
+  _EdgesPainter({this.points, this.stroke, this.color});
   final List<Offset> points;
   final double stroke;
   final Color color;
@@ -125,8 +149,10 @@ class _PoligonalEdgesPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
 
-class _PoligonalRadialPainter extends CustomPainter {
-  _PoligonalRadialPainter({
+/// Paints lines from a point (usually the center of the widget)
+/// to each node of the polygon
+class RadialPainter extends CustomPainter {
+  RadialPainter({
     this.points,
     this.stroke,
     this.color,

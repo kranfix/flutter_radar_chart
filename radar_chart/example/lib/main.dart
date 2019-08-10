@@ -33,7 +33,7 @@ class _RadarChartExampleState extends State<RadarChartExample> {
 
   void _incrementCounter() {
     setState(() {
-      final random = Random(12341);
+      final random = Random.secure();
       _counter++;
       values1.add(random.nextDouble());
       values2.add(random.nextDouble());
@@ -52,7 +52,7 @@ class _RadarChartExampleState extends State<RadarChartExample> {
           child: RadarChart(
             length: _counter,
             radius: 150,
-            initialAngle: pi / 3,
+            initialAngle: 0,
             //backgroundColor: Colors.white,
             //borderStroke: 2,
             //borderColor: Colors.red.withOpacity(0.4),
