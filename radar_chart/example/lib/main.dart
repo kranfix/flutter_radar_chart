@@ -47,34 +47,49 @@ class _RadarChartExampleState extends State<RadarChartExample> {
         title: Text(widget.title),
       ),
       body: Container(
-        color: Colors.grey.shade200,
-        child: Center(
-          child: RadarChart(
-            length: _counter,
-            radius: 150,
-            initialAngle: 0,
-            //backgroundColor: Colors.white,
-            //borderStroke: 2,
-            //borderColor: Colors.red.withOpacity(0.4),
-            radialStroke: 2,
-            radialColor: Colors.grey,
-            radars: [
-              RadarTile(
-                values: values1,
-                borderStroke: 2,
-                borderColor: Colors.yellow,
-                backgroundColor: Colors.yellow.withOpacity(0.4),
+          color: Colors.grey.shade200,
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 40,
+                  vertical: 10,
+                ),
+                child: Text(
+                  "There are ${values1.length} values for each radar chart!",
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
               ),
-              RadarTile(
-                values: values2,
-                borderStroke: 2,
-                borderColor: Colors.blue,
-                backgroundColor: Colors.blue.withOpacity(0.4),
+              RadarChart(
+                length: _counter,
+                radius: 150,
+                initialAngle: 0,
+                //backgroundColor: Colors.white,
+                //borderStroke: 2,
+                //borderColor: Colors.red.withOpacity(0.4),
+                radialStroke: 2,
+                radialColor: Colors.grey.shade300,
+                radars: [
+                  RadarTile(
+                    values: values1,
+                    borderStroke: 2,
+                    borderColor: Colors.yellow,
+                    backgroundColor: Colors.yellow.withOpacity(0.4),
+                  ),
+                  RadarTile(
+                    values: values2,
+                    borderStroke: 2,
+                    borderColor: Colors.blue,
+                    backgroundColor: Colors.blue.withOpacity(0.4),
+                  ),
+                ],
               ),
             ],
-          ),
-        ),
-      ),
+          )),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
