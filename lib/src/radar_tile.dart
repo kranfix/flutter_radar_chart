@@ -56,8 +56,8 @@ class RadarTile extends StatelessWidget {
         final angle = initialAngle + i * deltaAngle;
         final val =
             values == null || values[i] > 1 ? 1 : values[i] < 0 ? 0 : values[i];
-        final dx = radius * (1 + val * sin(angle));
-        final dy = radius * (1 + val * cos(angle));
+        final dx = radius * (1 + val * cos(angle));
+        final dy = radius * (1 + val * sin(angle));
         return Offset(dx, dy);
       },
       growable: false,
