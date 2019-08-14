@@ -12,7 +12,9 @@ class RadarTile extends StatelessWidget {
     this.values,
     this.radialStroke,
     this.radialColor,
-  });
+    this.vertices,
+  })  : assert(values == null || values.length > 2),
+        assert(vertices == null || vertices.length > 2);
 
   /// Borderline strokewidth
   /// if null, the borderlines does not appear
@@ -37,6 +39,11 @@ class RadarTile extends StatelessWidget {
   /// Color of lines from the center of the circumscribed circumference
   /// To work, it is necessary to set [radialStroke]
   final Color radialColor;
+
+  /// Optional vertices widgets. They must be a PreferredSizeWidget
+  /// be able to center them. Therefore, if not null, the [vertices.lenght]
+  ///  mush be the same to [values.length].
+  final List<PreferredSizeWidget> vertices;
 
   List<Offset> calculatePoints(BuildContext context) {
     final radar = RadarChart.of(context);
@@ -63,16 +70,16 @@ class RadarTile extends StatelessWidget {
     Widget tree;
 
     final points = calculatePoints(context);
-    final radius = RadarChart.of(context).radius;
+    final radar = RadarChart.of(context);
 
     // Paints lines from the center of the widget to each node of the polygon
     if (radialColor != null && radialStroke != null && radialStroke > 0) {
       tree = CustomPaint(
-        painter: RadialPainter(
+        painter: _RadialPainter(
           points: points,
           stroke: radialStroke,
           color: radialColor,
-          center: Offset(radius, radius),
+          center: Offset(radar.radius, radar.radius),
         ),
         child: tree,
       );
@@ -100,7 +107,26 @@ class RadarTile extends StatelessWidget {
         child: tree,
       );
     }
-    return SizedBox(width: 2 * radius, height: 2 * radius, child: tree);
+
+    if (vertices != null) {
+      tree = Stack(
+        children: <Widget>[
+          tree,
+          for (int i = 0; i < radar.length; i++)
+            Transform.translate(
+              offset: Offset(
+                points[i].dx - vertices[i].preferredSize.width / 2,
+                points[i].dy - vertices[i].preferredSize.height / 2,
+              ),
+              child: vertices[i],
+            )
+        ],
+      );
+    }
+
+    final width = 2 * radar.radius;
+    tree = SizedBox(width: width, height: width, child: tree);
+    return tree;
   }
 }
 
@@ -151,8 +177,8 @@ class _EdgesPainter extends CustomPainter {
 
 /// Paints lines from a point (usually the center of the widget)
 /// to each node of the polygon
-class RadialPainter extends CustomPainter {
-  RadialPainter({
+class _RadialPainter extends CustomPainter {
+  _RadialPainter({
     this.points,
     this.stroke,
     this.color,
