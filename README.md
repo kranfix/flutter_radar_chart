@@ -3,9 +3,7 @@
 A flexible Flutter radar/spider chart with super powers.
 Colors and Sizes are customizable.
 
-## Future work
-
-- Handle errors if a RadarTile is out of RadarChart.
+Pub: [https://pub.dev/packages/radar_chart](https://pub.dev/packages/radar_chart)
 
 # Example
 
@@ -13,14 +11,14 @@ Colors and Sizes are customizable.
 
 ```dart
 class _RadarChartExampleState extends State<RadarChartExample> {
-  int _counter = 3;
+  int _length = 3;
   List<double> values1 = [0.4, 0.8, 0.65];
   List<double> values2 = [0.5, 0.3, 0.85];
 
   void _incrementCounter() {
     setState(() {
       final random = Random(12341);
-      _counter++;
+      _length++;
       values1.add(random.nextDouble());
       values2.add(random.nextDouble());
     });
@@ -36,7 +34,7 @@ class _RadarChartExampleState extends State<RadarChartExample> {
         color: Colors.grey.shade200,
         child: Center(
           child: RadarChart(
-            length: _counter,
+            length: _length,
             radius: 150,
             initialAngle: pi / 3,
             //backgroundColor: Colors.white,
