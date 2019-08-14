@@ -1,4 +1,8 @@
-## [0.1.0] - August 14th, 2019
+## [1.0.1] - August 14th, 2019
+
+- Clockwise painting fixed.
+
+## [1.0.0] - August 14th, 2019
 
 - RadarChat and RadarTile support vertices widgets.
 
