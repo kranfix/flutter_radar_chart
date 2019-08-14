@@ -15,18 +15,19 @@ class RadarChart extends InheritedWidget {
     this.radialColor,
     this.radars: const [],
     this.initialAngle: 0,
+    this.vertices,
   }) : super(
-          child: Stack(
-            children: [
-              RadarTile(
-                backgroundColor: backgroundColor,
-                borderStroke: borderStroke,
-                borderColor: borderColor,
-                radialStroke: radialStroke,
-                radialColor: radialColor,
-              ),
-            ]..addAll(radars),
-          ),
+          child: Stack(children: [
+            RadarTile(
+              backgroundColor: backgroundColor,
+              borderStroke: borderStroke,
+              borderColor: borderColor,
+              radialStroke: radialStroke,
+              radialColor: radialColor,
+              vertices: vertices,
+            ),
+            ...radars
+          ]),
         );
 
   /// Radius of the circumscribed circumference of the radar chart.
@@ -64,6 +65,10 @@ class RadarChart extends InheritedWidget {
 
   /// Rotates the radar chart at an initial angle in radians in clockwise
   final double initialAngle;
+
+  /// Optional vertices widgets. They must be a [PreferredSizeWidget] and
+  /// their centers will match their respective vertice.
+  final List<PreferredSizeWidget> vertices;
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) {

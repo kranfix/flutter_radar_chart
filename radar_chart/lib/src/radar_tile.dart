@@ -40,9 +40,8 @@ class RadarTile extends StatelessWidget {
   /// To work, it is necessary to set [radialStroke]
   final Color radialColor;
 
-  /// Optional vertices widgets. They must be a PreferredSizeWidget
-  /// be able to center them. Therefore, if not null, the [vertices.lenght]
-  ///  mush be the same to [values.length].
+  /// Optional vertices widgets. They must be a [PreferredSizeWidget] and
+  /// their centers will match their respective vertice.
   final List<PreferredSizeWidget> vertices;
 
   List<Offset> calculatePoints(BuildContext context) {
