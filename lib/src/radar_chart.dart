@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:radar_chart/src/radar_tile.dart';
+import 'package:radar_chart/src/radar_data.dart';
+import 'package:radar_chart/src/radar_chart_not_found_error.dart';
 
 enum RadarChatType { cirular, poligonal }
 
@@ -16,7 +18,12 @@ class RadarChart extends InheritedWidget {
     this.radars: const [],
     this.initialAngle: 0,
     this.vertices,
-  }) : super(
+  })  : data = RadarData(
+          length: length,
+          radius: radius,
+          initialAngle: initialAngle,
+        ),
+        super(
           child: Stack(children: [
             RadarTile(
               backgroundColor: backgroundColor,
@@ -26,9 +33,12 @@ class RadarChart extends InheritedWidget {
               radialColor: radialColor,
               vertices: vertices,
             ),
-            ...radars
+            if (radars != null) ...radars
           ]),
         );
+
+  /// [RadarData] has necessary data for every [RadarTile]
+  final RadarData data;
 
   /// Radius of the circumscribed circumference of the radar chart.
   /// This defines the sizes:
@@ -75,6 +85,12 @@ class RadarChart extends InheritedWidget {
     return true;
   }
 
-  static RadarChart of(BuildContext context) =>
-      context.ancestorInheritedElementForWidgetOfExactType(RadarChart).widget;
+  static RadarData of(BuildContext context) {
+    final RadarChart chart =
+        context.findAncestorWidgetOfExactType<RadarChart>();
+    if (chart == null) {
+      throw RadarChartNotFoundError(context.widget.runtimeType);
+    }
+    return chart.data;
+  }
 }
