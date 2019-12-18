@@ -1,3 +1,8 @@
+## [1.1.0] - December 17th, 2019
+
+- Refactoring RadarChart.of(context).
+- Creating RadarData and RadarChartNotFoundError.
+
 ## [1.0.1] - August 14th, 2019
 
 - Clockwise painting fixed.
