@@ -3,7 +3,7 @@ import 'radar_data.dart';
 
 /// The error that will be thrown if [RadarChart.of] fails to
 /// find a [RadarData] as an ancestor of the [BuildContext] used.
-class RadarChartNotFoundError<T extends Object> extends Error {
+class RadarChartNotFoundError extends Error {
   /// The type of the Widget requesting the value
   final Type widgetType;
 
