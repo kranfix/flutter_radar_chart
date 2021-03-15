@@ -1,6 +1,9 @@
-/// The error that will be thrown if [Provider.of<T>] fails to find a
-/// [Provider<T>] as an ancestor of the [BuildContext] used.
-class RadarChartNotFoundError extends Error {
+import 'radar_chart.dart';
+import 'radar_data.dart';
+
+/// The error that will be thrown if [RadarChart.of] fails to
+/// find a [RadarData] as an ancestor of the [BuildContext] used.
+class RadarChartNotFoundError<T extends Object> extends Error {
   /// The type of the Widget requesting the value
   final Type widgetType;
 
