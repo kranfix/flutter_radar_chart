@@ -6,7 +6,7 @@ author: Frank Moreno <frankmoreno1993@gmail.com>
 homepage: https://github.com/kranfix/flutter_radar_chart
 
 environment:
-  sdk: ">=2.3.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:

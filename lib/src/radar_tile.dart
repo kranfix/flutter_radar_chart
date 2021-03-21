@@ -1,4 +1,5 @@
 import 'dart:math' show sin, cos, pi;
+
 import 'package:flutter/material.dart';
 import 'package:radar_chart/src/radar_chart.dart';
 
@@ -19,30 +20,30 @@ class RadarTile extends StatelessWidget {
   /// Borderline strokewidth
   /// if null, the borderlines does not appear
   /// To work, it is necessary to set [borderColor]
-  final double borderStroke;
+  final double? borderStroke;
 
   /// Borderline color
   /// To work, it is necessary to set [borderStroke]
-  final Color borderColor;
+  final Color? borderColor;
 
   /// Radar chart Background color
   /// White by default
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// A list of values between 0.0 (zero) and 1.0 (one)
-  final List<double> values;
+  final List<double>? values;
 
   /// Strokewidth of lines from the center of the circumscribed circumference
   /// To work, it is necessary to set [radialColor]
-  final double radialStroke;
+  final double? radialStroke;
 
   /// Color of lines from the center of the circumscribed circumference
   /// To work, it is necessary to set [radialStroke]
-  final Color radialColor;
+  final Color? radialColor;
 
   /// Optional vertices widgets. They must be a [PreferredSizeWidget] and
   /// their centers will match their respective vertice.
-  final List<PreferredSizeWidget> vertices;
+  final List<PreferredSizeWidget>? vertices;
 
   List<Offset> calculatePoints(BuildContext context) {
     final radar = RadarChart.of(context);
@@ -54,8 +55,11 @@ class RadarTile extends StatelessWidget {
       length,
       (i) {
         final angle = initialAngle + i * deltaAngle;
-        final double val =
-            values == null || values[i] > 1 ? 1 : values[i] < 0 ? 0 : values[i];
+        final double val = values == null || values![i] > 1
+            ? 1
+            : values![i] < 0
+                ? 0
+                : values![i];
         final dx = radius * (1 + val * cos(angle));
         final dy = radius * (1 + val * sin(angle));
         return Offset(dx, dy);
@@ -66,26 +70,25 @@ class RadarTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget tree;
+    Widget? tree;
 
     final points = calculatePoints(context);
     final radar = RadarChart.of(context);
 
     // Paints lines from the center of the widget to each node of the polygon
-    if (radialColor != null && radialStroke != null && radialStroke > 0) {
+    if (radialColor != null && radialStroke != null && radialStroke! > 0) {
       tree = CustomPaint(
         painter: _RadialPainter(
-          points: points,
-          stroke: radialStroke,
-          color: radialColor,
-          center: Offset(radar.radius, radar.radius),
-        ),
+            points: points,
+            stroke: radialStroke,
+            color: radialColor,
+            center: Offset(radar.radius, radar.radius)),
         child: tree,
       );
     }
 
     // Paints polygonal edges if required
-    if (borderColor != null && borderStroke != null && borderStroke > 0) {
+    if (borderColor != null && borderStroke != null && borderStroke! > 0) {
       tree = CustomPaint(
         painter: _EdgesPainter(
           points: points,
@@ -109,17 +112,17 @@ class RadarTile extends StatelessWidget {
 
     if (vertices != null) {
       tree = Stack(
-        children: <Widget>[
-          tree,
+        children: (<Widget>[
+          tree!,
           for (int i = 0; i < radar.length; i++)
             Transform.translate(
               offset: Offset(
-                points[i].dx - vertices[i].preferredSize.width / 2,
-                points[i].dy - vertices[i].preferredSize.height / 2,
+                points[i].dx - vertices![i].preferredSize.width / 2,
+                points[i].dy - vertices![i].preferredSize.height / 2,
               ),
-              child: vertices[i],
+              child: vertices![i],
             )
-        ],
+        ]),
       );
     }
 
@@ -132,15 +135,16 @@ class RadarTile extends StatelessWidget {
 /// Polygonal backgound painter
 class _BackgroundPainter extends CustomPainter {
   _BackgroundPainter({this.points, this.color});
-  final List<Offset> points;
-  final Color color;
+
+  final List<Offset>? points;
+  final Color? color;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final path = Path()..addPolygon(points, true);
+    final path = Path()..addPolygon(points!, true);
 
     final paint = Paint()
-      ..color = color
+      ..color = color!
       ..strokeCap = StrokeCap.round;
     canvas.drawPath(path, paint);
   }
@@ -152,18 +156,19 @@ class _BackgroundPainter extends CustomPainter {
 /// Paints all the Edges of a polygona
 class _EdgesPainter extends CustomPainter {
   _EdgesPainter({this.points, this.stroke, this.color});
-  final List<Offset> points;
-  final double stroke;
-  final Color color;
+
+  final List<Offset>? points;
+  final double? stroke;
+  final Color? color;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final path = Path()..addPolygon(points, true);
+    final path = Path()..addPolygon(points!, true);
 
-    if (color != null && stroke != null && stroke > 0) {
+    if (color != null && stroke != null && stroke! > 0) {
       final paint = Paint()
-        ..color = color
-        ..strokeWidth = stroke
+        ..color = color!
+        ..strokeWidth = stroke!
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round;
       canvas.drawPath(path, paint);
@@ -183,21 +188,22 @@ class _RadialPainter extends CustomPainter {
     this.color,
     this.center,
   });
-  final List<Offset> points;
-  final double stroke;
-  final Color color;
-  final Offset center;
+
+  final List<Offset>? points;
+  final double? stroke;
+  final Color? color;
+  final Offset? center;
 
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = color
-      ..strokeWidth = stroke
+      ..color = color!
+      ..strokeWidth = stroke!
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    for (var point in points) {
-      canvas.drawLine(center, point, paint);
+    for (var point in points!) {
+      canvas.drawLine(center!, point, paint);
     }
   }
 

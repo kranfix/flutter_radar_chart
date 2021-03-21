@@ -2,11 +2,10 @@ import 'package:meta/meta.dart';
 
 class RadarData {
   const RadarData({
-    @required this.length,
-    @required this.radius,
+    required this.length,
+    required this.radius,
     this.initialAngle = 0,
-  })  : assert(length != null && length >= 3),
-        assert(initialAngle != null);
+  })  : assert(length >= 3);
 
   /// Number of points to draw for the [RadarChart]
   /// every [RadarTile]
