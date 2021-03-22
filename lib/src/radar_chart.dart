@@ -10,7 +10,7 @@ class RadarChart extends InheritedWidget {
   RadarChart({
     required this.radius,
     required this.length,
-    this.backgroundColor: Colors.white,
+    this.backgroundColor,
     this.borderStroke: 4.0,
     this.borderColor,
     this.radialStroke,
@@ -60,7 +60,7 @@ class RadarChart extends InheritedWidget {
 
   /// Radar chart Background color
   /// White by default
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// Strokewidth of lines from the center of the circumscribed circumference
   /// To work, it is necessary to set [radialColor]
