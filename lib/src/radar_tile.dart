@@ -5,15 +5,17 @@ import 'package:radar_chart/src/radar_chart.dart';
 /// [RadarTile] paints a polygon with optional edges, background or
 /// radial lines (lines from each node to the center)
 class RadarTile extends StatelessWidget {
-  RadarTile({
-    this.borderStroke,
+  const RadarTile({
+    double? borderStroke,
     this.borderColor,
     this.backgroundColor,
     this.values,
-    this.radialStroke,
+    double? radialStroke,
     this.radialColor,
     this.vertices,
-  })  : assert(values == null || values.length > 2),
+  })  : borderStroke = borderStroke ?? 0.0,
+        radialStroke = radialStroke ?? 0.0,
+        assert(values == null || values.length > 2),
         assert(vertices == null || vertices.length > 2);
 
   /// Borderline strokewidth
@@ -23,14 +25,14 @@ class RadarTile extends StatelessWidget {
 
   /// Borderline color
   /// To work, it is necessary to set [borderStroke]
-  final Color borderColor;
+  final Color? borderColor;
 
   /// Radar chart Background color
   /// White by default
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// A list of values between 0.0 (zero) and 1.0 (one)
-  final List<double> values;
+  final List<double>? values;
 
   /// Strokewidth of lines from the center of the circumscribed circumference
   /// To work, it is necessary to set [radialColor]
@@ -38,11 +40,11 @@ class RadarTile extends StatelessWidget {
 
   /// Color of lines from the center of the circumscribed circumference
   /// To work, it is necessary to set [radialStroke]
-  final Color radialColor;
+  final Color? radialColor;
 
   /// Optional vertices widgets. They must be a [PreferredSizeWidget] and
   /// their centers will match their respective vertice.
-  final List<PreferredSizeWidget> vertices;
+  final List<PreferredSizeWidget>? vertices;
 
   List<Offset> calculatePoints(BuildContext context) {
     final radar = RadarChart.of(context);
@@ -54,8 +56,7 @@ class RadarTile extends StatelessWidget {
       length,
       (i) {
         final angle = initialAngle + i * deltaAngle;
-        final double val =
-            values == null || values[i] > 1 ? 1 : values[i] < 0 ? 0 : values[i];
+        final val = values?[i].clamp(0.0, 1.0) ?? 0.0;
         final dx = radius * (1 + val * cos(angle));
         final dy = radius * (1 + val * sin(angle));
         return Offset(dx, dy);
@@ -66,13 +67,13 @@ class RadarTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget tree;
+    Widget? tree;
 
     final points = calculatePoints(context);
     final radar = RadarChart.of(context);
 
     // Paints lines from the center of the widget to each node of the polygon
-    if (radialColor != null && radialStroke != null && radialStroke > 0) {
+    if (radialColor != null && radialStroke > 0) {
       tree = CustomPaint(
         painter: _RadialPainter(
           points: points,
@@ -85,12 +86,12 @@ class RadarTile extends StatelessWidget {
     }
 
     // Paints polygonal edges if required
-    if (borderColor != null && borderStroke != null && borderStroke > 0) {
+    if (borderColor != null && borderStroke > 0) {
       tree = CustomPaint(
         painter: _EdgesPainter(
           points: points,
           stroke: borderStroke,
-          color: borderColor,
+          color: borderColor!,
         ),
         //child: tree,
       );
@@ -100,7 +101,7 @@ class RadarTile extends StatelessWidget {
     if (backgroundColor != null) {
       tree = CustomPaint(
         painter: _BackgroundPainter(
-          color: backgroundColor,
+          color: backgroundColor!,
           points: points,
         ),
         child: tree,
@@ -108,30 +109,34 @@ class RadarTile extends StatelessWidget {
     }
 
     if (vertices != null) {
+      final _vertices = vertices!;
       tree = Stack(
         children: <Widget>[
-          tree,
+          if (tree != null) tree,
           for (int i = 0; i < radar.length; i++)
             Transform.translate(
               offset: Offset(
-                points[i].dx - vertices[i].preferredSize.width / 2,
-                points[i].dy - vertices[i].preferredSize.height / 2,
+                points[i].dx - _vertices[i].preferredSize.width / 2,
+                points[i].dy - _vertices[i].preferredSize.height / 2,
               ),
-              child: vertices[i],
+              child: _vertices[i],
             )
         ],
       );
     }
 
     final width = 2 * radar.radius;
-    tree = SizedBox(width: width, height: width, child: tree);
-    return tree;
+    return SizedBox(width: width, height: width, child: tree);
   }
 }
 
 /// Polygonal backgound painter
 class _BackgroundPainter extends CustomPainter {
-  _BackgroundPainter({this.points, this.color});
+  const _BackgroundPainter({
+    required this.points,
+    required this.color,
+  });
+
   final List<Offset> points;
   final Color color;
 
@@ -151,18 +156,23 @@ class _BackgroundPainter extends CustomPainter {
 
 /// Paints all the Edges of a polygona
 class _EdgesPainter extends CustomPainter {
-  _EdgesPainter({this.points, this.stroke, this.color});
+  _EdgesPainter({
+    required this.points,
+    this.stroke = 0.0,
+    this.color,
+  });
+
   final List<Offset> points;
   final double stroke;
-  final Color color;
+  final Color? color;
 
   @override
   void paint(Canvas canvas, Size size) {
     final path = Path()..addPolygon(points, true);
 
-    if (color != null && stroke != null && stroke > 0) {
+    if (color != null && stroke > 0) {
       final paint = Paint()
-        ..color = color
+        ..color = color!
         ..strokeWidth = stroke
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round;
@@ -177,12 +187,14 @@ class _EdgesPainter extends CustomPainter {
 /// Paints lines from a point (usually the center of the widget)
 /// to each node of the polygon
 class _RadialPainter extends CustomPainter {
-  _RadialPainter({
-    this.points,
-    this.stroke,
-    this.color,
-    this.center,
-  });
+  const _RadialPainter({
+    required this.points,
+    double? stroke,
+    Color? color,
+    required this.center,
+  })   : stroke = stroke ?? 2.0,
+        color = color ?? Colors.grey;
+
   final List<Offset> points;
   final double stroke;
   final Color color;
