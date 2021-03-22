@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
 }
 
 class RadarChartExample extends StatefulWidget {
-  RadarChartExample({Key key, this.title}) : super(key: key);
+  const RadarChartExample({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -30,8 +30,8 @@ class _RadarChartExampleState extends State<RadarChartExample> {
   int _counter = 3;
   List<double> values1 = [0.4, 0.8, 0.65];
   List<double> values2 = [0.5, 0.3, 0.85];
-  List<PreferredSizeWidget> vertices2;
-  PreferredSizeWidget _vertex;
+  late List<PreferredSizeWidget> vertices2;
+  late PreferredSizeWidget _vertex;
 
   @override
   void initState() {
@@ -49,8 +49,8 @@ class _RadarChartExampleState extends State<RadarChartExample> {
   }
 
   void _incrementCounter() {
+    final random = Random.secure();
     setState(() {
-      final random = Random.secure();
       _counter++;
       values1.add(random.nextDouble());
       values2.add(random.nextDouble());
