@@ -56,7 +56,7 @@ class RadarTile extends StatelessWidget {
       length,
       (i) {
         final angle = initialAngle + i * deltaAngle;
-        final val = values?[i].clamp(0.0, 1.0) ?? 0.0;
+        final val = values?[i].clamp(0.0, 1.0) ?? 1.0;
         final dx = radius * (1 + val * cos(angle));
         final dy = radius * (1 + val * sin(angle));
         return Offset(dx, dy);
@@ -135,7 +135,7 @@ class _BackgroundPainter extends CustomPainter {
   const _BackgroundPainter({
     required this.points,
     required this.color,
-  });
+  }) : assert(points.length > 2);
 
   final List<Offset> points;
   final Color color;
