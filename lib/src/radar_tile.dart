@@ -114,13 +114,11 @@ class RadarTile extends StatelessWidget {
         children: <Widget>[
           if (tree != null) tree,
           for (int i = 0; i < radar.length; i++)
-            Transform.translate(
-              offset: Offset(
-                points[i].dx - _vertices[i].preferredSize.width / 2,
-                points[i].dy - _vertices[i].preferredSize.height / 2,
-              ),
+            Positioned(
+              left: points[i].dx - _vertices[i].preferredSize.width / 2,
+              top: points[i].dy - _vertices[i].preferredSize.height / 2,
               child: _vertices[i],
-            )
+            ),
         ],
       );
     }
