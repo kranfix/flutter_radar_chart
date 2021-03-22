@@ -158,26 +158,24 @@ class _BackgroundPainter extends CustomPainter {
 class _EdgesPainter extends CustomPainter {
   _EdgesPainter({
     required this.points,
-    this.stroke = 0.0,
-    this.color,
-  });
+    required this.stroke,
+    required this.color,
+  }) : assert(stroke > 0.0);
 
   final List<Offset> points;
   final double stroke;
-  final Color? color;
+  final Color color;
 
   @override
   void paint(Canvas canvas, Size size) {
     final path = Path()..addPolygon(points, true);
 
-    if (color != null && stroke > 0) {
-      final paint = Paint()
-        ..color = color!
-        ..strokeWidth = stroke
-        ..style = PaintingStyle.stroke
-        ..strokeCap = StrokeCap.round;
-      canvas.drawPath(path, paint);
-    }
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = stroke
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    canvas.drawPath(path, paint);
   }
 
   @override
@@ -189,11 +187,10 @@ class _EdgesPainter extends CustomPainter {
 class _RadialPainter extends CustomPainter {
   const _RadialPainter({
     required this.points,
-    double? stroke,
+    required this.stroke,
     Color? color,
     required this.center,
-  })   : stroke = stroke ?? 2.0,
-        color = color ?? Colors.grey;
+  }) : color = color ?? Colors.grey;
 
   final List<Offset> points;
   final double stroke;
