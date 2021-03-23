@@ -1,6 +1,7 @@
 import 'dart:math' show sin, cos, pi;
 import 'package:flutter/material.dart';
 import 'package:radar_chart/src/radar_chart.dart';
+import 'package:radar_chart/src/radar_data.dart';
 
 /// [RadarTile] paints a polygon with optional edges, background or
 /// radial lines (lines from each node to the center)
@@ -46,8 +47,7 @@ class RadarTile extends StatelessWidget {
   /// their centers will match their respective vertice.
   final List<PreferredSizeWidget>? vertices;
 
-  List<Offset> calculatePoints(BuildContext context) {
-    final radar = RadarChart.of(context);
+  List<Offset> calculatePoints(RadarData radar) {
     final radius = radar.radius;
     final length = radar.length;
     final deltaAngle = 2 * pi / length;
@@ -67,52 +67,23 @@ class RadarTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget? tree;
-
-    final points = calculatePoints(context);
     final radar = RadarChart.of(context);
+    final points = calculatePoints(radar);
 
-    // Paints polygonal edges if required
-    if (borderColor != null && borderStroke > 0) {
-      tree = CustomPaint(
-        painter: _EdgesPainter(
-          points: points,
-          stroke: borderStroke,
-          color: borderColor!,
-        ),
-        //child: tree,
-      );
-    }
-
-    // Paints the polygon backgorund edges if required
-    if (backgroundColor != null) {
-      tree = CustomPaint(
-        painter: _BackgroundPainter(
-          color: backgroundColor!,
-          points: points,
-        ),
-        child: tree,
-      );
-    }
-
-    // Paints lines from the center of the widget to each node of the polygon
-    if (radialColor != null && radialStroke > 0) {
-      tree = CustomPaint(
-        painter: _RadialPainter(
-          points: points,
-          stroke: radialStroke,
-          color: radialColor,
-          center: Offset(radar.radius, radar.radius),
-        ),
-        child: tree,
-      );
-    }
+    Widget tree = CustomPaint(
+      painter: _RadarTilePainter(
+        points: points,
+        backgroundColor: backgroundColor,
+        border: _LineData.tryOrNull(borderColor, borderStroke),
+        radial: _LineData.tryOrNull(radialColor, radialStroke),
+      ),
+    );
 
     if (vertices != null) {
       final _vertices = vertices!;
       tree = Stack(
         children: <Widget>[
-          if (tree != null) tree,
+          tree,
           for (int i = 0; i < radar.length; i++)
             Positioned(
               left: points[i].dx - _vertices[i].preferredSize.width / 2,
@@ -128,87 +99,71 @@ class RadarTile extends StatelessWidget {
   }
 }
 
-/// Polygonal backgound painter
-class _BackgroundPainter extends CustomPainter {
-  const _BackgroundPainter({
+class _RadarTilePainter extends CustomPainter {
+  const _RadarTilePainter({
     required this.points,
-    required this.color,
-  }) : assert(points.length > 2);
+    this.backgroundColor,
+    this.border,
+    this.radial,
+  });
 
   final List<Offset> points;
-  final Color color;
+  final Color? backgroundColor;
+  final _LineData? border;
+  final _LineData? radial;
 
   @override
   void paint(Canvas canvas, Size size) {
     final path = Path()..addPolygon(points, true);
+    paintBg(canvas, size, path);
+    paintRadial(canvas, size);
+    paintEdges(canvas, size);
+  }
 
+  void paintBg(Canvas canvas, Size size, Path path) {
+    if (backgroundColor == null) return;
     final paint = Paint()
-      ..color = color
+      ..color = backgroundColor!
       ..strokeCap = StrokeCap.round;
     canvas.drawPath(path, paint);
   }
 
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
-}
-
-/// Paints all the Edges of a polygona
-class _EdgesPainter extends CustomPainter {
-  _EdgesPainter({
-    required this.points,
-    required this.stroke,
-    required this.color,
-  })   : assert(points.length > 2),
-        assert(stroke > 0.0);
-
-  final List<Offset> points;
-  final double stroke;
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final path = Path()..addPolygon(points, true);
-
+  void paintRadial(Canvas canvas, Size size) {
+    if (radial == null) return;
     final paint = Paint()
-      ..color = color
-      ..strokeWidth = stroke
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
-}
-
-/// Paints lines from a point (usually the center of the widget)
-/// to each node of the polygon
-class _RadialPainter extends CustomPainter {
-  const _RadialPainter({
-    required this.points,
-    required this.stroke,
-    Color? color,
-    required this.center,
-  }) : color = color ?? Colors.grey;
-
-  final List<Offset> points;
-  final double stroke;
-  final Color color;
-  final Offset center;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = stroke
+      ..color = radial!.color
+      ..strokeWidth = radial!.stroke
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
     for (var point in points) {
-      canvas.drawLine(center, point, paint);
+      canvas.drawLine(size.center(Offset.zero), point, paint);
     }
   }
 
+  void paintEdges(Canvas canvas, Size size) {
+    if (border == null) return;
+    final path = Path()..addPolygon(points, true);
+    final paint = Paint()
+      ..color = border!.color
+      ..strokeWidth = border!.stroke
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    canvas.drawPath(path, paint);
+  }
+
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+class _LineData {
+  const _LineData(this.color, this.stroke) : assert(stroke > 0.0);
+
+  static _LineData? tryOrNull(Color? color, double? stroke) {
+    if (color == null || (stroke ?? 0.0) == 0.0) return null;
+    return _LineData(color, stroke!);
+  }
+
+  final Color color;
+  final double stroke;
 }
