@@ -1,3 +1,7 @@
+## [2.0.0] - March 23rd, 2021
+
+- Migration to null-safety
+
 ## [1.1.0] - December 17th, 2019
 
 - Refactoring RadarChart.of(context).
