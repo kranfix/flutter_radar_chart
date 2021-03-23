@@ -72,19 +72,6 @@ class RadarTile extends StatelessWidget {
     final points = calculatePoints(context);
     final radar = RadarChart.of(context);
 
-    // Paints lines from the center of the widget to each node of the polygon
-    if (radialColor != null && radialStroke > 0) {
-      tree = CustomPaint(
-        painter: _RadialPainter(
-          points: points,
-          stroke: radialStroke,
-          color: radialColor,
-          center: Offset(radar.radius, radar.radius),
-        ),
-        child: tree,
-      );
-    }
-
     // Paints polygonal edges if required
     if (borderColor != null && borderStroke > 0) {
       tree = CustomPaint(
@@ -103,6 +90,19 @@ class RadarTile extends StatelessWidget {
         painter: _BackgroundPainter(
           color: backgroundColor!,
           points: points,
+        ),
+        child: tree,
+      );
+    }
+
+    // Paints lines from the center of the widget to each node of the polygon
+    if (radialColor != null && radialStroke > 0) {
+      tree = CustomPaint(
+        painter: _RadialPainter(
+          points: points,
+          stroke: radialStroke,
+          color: radialColor,
+          center: Offset(radar.radius, radar.radius),
         ),
         child: tree,
       );
@@ -158,7 +158,8 @@ class _EdgesPainter extends CustomPainter {
     required this.points,
     required this.stroke,
     required this.color,
-  }) : assert(stroke > 0.0);
+  })   : assert(points.length > 2),
+        assert(stroke > 0.0);
 
   final List<Offset> points;
   final double stroke;
