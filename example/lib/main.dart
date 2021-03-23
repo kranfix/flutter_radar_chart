@@ -38,7 +38,7 @@ class _RadarChartExampleState extends State<RadarChartExample> {
     super.initState();
     const double radius = 5;
     _vertex = PreferredSize(
-      preferredSize: Size(2 * radius, 2 * radius),
+      preferredSize: const Size.square(2 * radius),
       child: CircleAvatar(
         backgroundColor: Colors.red,
         radius: radius,
@@ -64,31 +64,25 @@ class _RadarChartExampleState extends State<RadarChartExample> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Container(
-        color: Colors.grey.shade200,
-        width: MediaQuery.of(context).size.width,
+      backgroundColor: Colors.grey.shade200,
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 40,
-                vertical: 10,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
               child: Text(
                 "There are ${values1.length} values for each radar chart!",
-                style: TextStyle(
-                  fontSize: 30,
-                ),
+                style: const TextStyle(fontSize: 30),
               ),
             ),
             RadarChart(
               length: _counter,
               radius: 150,
               initialAngle: 0,
-              //backgroundColor: Colors.white,
-              //borderStroke: 2,
-              //borderColor: Colors.red.withOpacity(0.4),
+              backgroundColor: Colors.white,
+              borderStroke: 2,
+              borderColor: Colors.grey.shade300,
               radialStroke: 2,
               radialColor: Colors.grey.shade300,
               radars: [
