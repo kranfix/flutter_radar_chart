@@ -2,7 +2,6 @@ name: radar_chart
 description: A flexible Flutter radar/spider chart with super powers.
   Colors and Sizes are customizable.
 version: 2.0.0
-author: Frank Moreno <frankmoreno1993@gmail.com>
 homepage: https://github.com/kranfix/flutter_radar_chart
 
 environment:
