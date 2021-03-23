@@ -1,3 +1,7 @@
+## [2.0.1] - March 23rd, 2021
+
+- Fix radial lines
+
 ## [2.0.0] - March 23rd, 2021
 
 - Migration to null-safety
