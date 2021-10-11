@@ -1,14 +1,14 @@
-import 'radar_chart.dart';
-import 'radar_data.dart';
+import 'package:flutter/widgets.dart';
+import 'package:radar_chart/radar_chart.dart';
 
 /// The error that will be thrown if [RadarChart.of] fails to
 /// find a [RadarData] as an ancestor of the [BuildContext] used.
 class RadarChartNotFoundError extends Error {
-  /// The type of the Widget requesting the value
-  final Type widgetType;
-
   /// Create a ProviderNotFound error with the type represented as a String.
   RadarChartNotFoundError(this.widgetType);
+
+  /// The type of the Widget requesting the value
+  final Type widgetType;
 
   @override
   String toString() {
