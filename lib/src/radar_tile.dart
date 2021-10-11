@@ -1,12 +1,15 @@
 import 'dart:math' show sin, cos, pi;
 import 'package:flutter/material.dart';
 import 'package:radar_chart/src/radar_chart.dart';
-import 'package:radar_chart/src/radar_data.dart';
 
+/// {@template radar_tile}
 /// [RadarTile] paints a polygon with optional edges, background or
 /// radial lines (lines from each node to the center)
+/// {@endtemplate}
 class RadarTile extends StatelessWidget {
+  /// {@macro radar_tile}
   const RadarTile({
+    Key? key,
     double? borderStroke,
     this.borderColor,
     this.backgroundColor,
@@ -17,7 +20,8 @@ class RadarTile extends StatelessWidget {
   })  : borderStroke = borderStroke ?? 0.0,
         radialStroke = radialStroke ?? 0.0,
         assert(values == null || values.length > 2),
-        assert(vertices == null || vertices.length > 2);
+        assert(vertices == null || vertices.length > 2),
+        super(key: key);
 
   /// Borderline strokewidth
   /// if null, the borderlines does not appear
@@ -47,7 +51,7 @@ class RadarTile extends StatelessWidget {
   /// their centers will match their respective vertice.
   final List<PreferredSizeWidget>? vertices;
 
-  List<Offset> calculatePoints(RadarData radar) {
+  List<Offset> _calculatePoints(RadarData radar) {
     final radius = radar.radius;
     final length = radar.length;
     final deltaAngle = 2 * pi / length;
@@ -68,7 +72,7 @@ class RadarTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final radar = RadarChart.of(context);
-    final points = calculatePoints(radar);
+    final points = _calculatePoints(radar);
 
     Widget tree = CustomPaint(
       painter: _RadarTilePainter(
@@ -82,8 +86,9 @@ class RadarTile extends StatelessWidget {
     if (vertices != null) {
       final _vertices = vertices!;
       tree = Stack(
+        clipBehavior: Clip.none,
         children: <Widget>[
-          tree,
+          Positioned.fill(child: tree),
           for (int i = 0; i < radar.length; i++)
             Positioned(
               left: points[i].dx - _vertices[i].preferredSize.width / 2,
@@ -136,7 +141,7 @@ class _RadarTilePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    for (var point in points) {
+    for (final point in points) {
       canvas.drawLine(size.center(Offset.zero), point, paint);
     }
   }

@@ -101,6 +101,47 @@ class _RadarChartExampleState extends State<RadarChartExample> {
                 ),
               ],
             ),
+            RadarChart(
+              length: 3,
+              radius: 100,
+              initialAngle: 0,
+              backgroundColor: Colors.white,
+              borderStroke: 2,
+              borderColor: Colors.grey.shade300,
+              radialStroke: 1,
+              radialColor: Colors.grey.shade300,
+              vertices: [
+                for (int i = 0; i < 3; i++)
+                  RadarVertex(
+                    radius: 15,
+                    textOffset: Offset(0, 0),
+                    text: Text('$i'),
+                  ),
+              ],
+              radars: [
+                RadarTile(
+                  radialColor: Colors.red,
+                  values: values1,
+                  borderStroke: 2,
+                  borderColor: Colors.yellow,
+                  backgroundColor: Colors.yellow.withOpacity(0.4),
+                ),
+                RadarTile(
+                  radialColor: Colors.red,
+                  values: values1,
+                  borderStroke: 2,
+                  borderColor: Colors.yellow,
+                  backgroundColor: Colors.yellow.withOpacity(0.4),
+                ),
+                RadarTile(
+                  radialColor: Colors.red,
+                  values: values1,
+                  borderStroke: 2,
+                  borderColor: Colors.yellow,
+                  backgroundColor: Colors.yellow.withOpacity(0.4),
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -110,5 +151,39 @@ class _RadarChartExampleState extends State<RadarChartExample> {
         child: Icon(Icons.add),
       ),
     );
+  }
+}
+
+class RadarVertex extends StatelessWidget with PreferredSizeWidget {
+  const RadarVertex({
+    required this.radius,
+    this.text,
+    this.textOffset,
+  });
+
+  final double radius;
+  final Widget? text;
+  final Offset? textOffset;
+
+  @override
+  Size get preferredSize => Size.fromRadius(radius);
+
+  @override
+  Widget build(BuildContext context) {
+    Widget tree = CircleAvatar(
+      radius: radius,
+      backgroundColor: Colors.green,
+    );
+    if (text != null) {
+      tree = Stack(
+        children: [
+          tree,
+          Center(
+            child: text,
+          )
+        ],
+      );
+    }
+    return tree;
   }
 }
